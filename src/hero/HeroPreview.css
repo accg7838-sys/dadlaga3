@@ -1,0 +1,13 @@
+.hero-preview {
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.hero-preview__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 24px;
+}
