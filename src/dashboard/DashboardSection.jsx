@@ -1,4 +1,5 @@
 import "./DashboardSection.css";
+import { useEffect, useRef, useState } from "react";
 import mainImage from "../assets/MainImage.png";
 
 const menuItems = [
@@ -29,8 +30,56 @@ const menuItems = [
 ];
 
 export default function DashboardSection() {
+  const sectionRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const menuRefs = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("dashboard-section-visible");
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  // Handle scroll events on the menu
+  const handleMenuScroll = (e) => {
+    const scrollTop = e.target.scrollTop;
+    const itemHeight = e.target.children[0]?.offsetHeight || 0;
+    const newIndex = Math.round(scrollTop / itemHeight);
+    if (newIndex !== activeIndex && newIndex >= 0 && newIndex < menuItems.length) {
+      setActiveIndex(newIndex);
+    }
+  };
+
+  // Handle click on menu item
+  const handleMenuItemClick = (index) => {
+    setActiveIndex(index);
+    const menuContainer = document.querySelector('.dashboard-menu-items');
+    if (menuContainer) {
+      const itemHeight = menuContainer.children[0]?.offsetHeight || 0;
+      menuContainer.scrollTo({
+        top: index * itemHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <section className="dashboard-section" id="process">
+    <section className="dashboard-section" id="process" ref={sectionRef}>
       <div className="dashboard-header">
         <h2 className="dashboard-title">Хяналтын Самбар</h2>
         <p className="dashboard-subtitle">
@@ -42,16 +91,30 @@ export default function DashboardSection() {
       <div className="dashboard-content">
         <div className="dashboard-menu">
           <div className="dashboard-line">
-            <div className="dashboard-line-active" />
+            <div 
+              className="dashboard-line-active" 
+              style={{ 
+                height: `${(activeIndex + 1) * 42}px`,
+                transition: 'height 0.3s ease'
+              }} 
+            />
           </div>
 
-          <div className="dashboard-menu-items">
-            {menuItems.map((item) => (
-              <div key={item.title} className="dashboard-menu-item">
-                <h3 className={`dashboard-menu-title ${item.active ? "active" : ""}`}>
+          <div 
+            className="dashboard-menu-items"
+            onScroll={handleMenuScroll}
+          >
+            {menuItems.map((item, index) => (
+              <div 
+                key={item.title} 
+                className="dashboard-menu-item"
+                onClick={() => handleMenuItemClick(index)}
+                style={{ cursor: 'pointer' }}
+              >
+                <h3 className={`dashboard-menu-title ${activeIndex === index ? "active" : ""}`}>
                   {item.title}
                 </h3>
-                <p className={`dashboard-menu-description ${item.active ? "active" : ""}`}>
+                <p className={`dashboard-menu-description ${activeIndex === index ? "active" : ""}`}>
                   {item.description}
                 </p>
               </div>

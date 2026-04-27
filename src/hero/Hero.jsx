@@ -39,10 +39,6 @@ export default function Hero() {
           <button type="button" className="hero__btn hero__btn--primary">
             СИСТЕМД НЭВТРЭХ
           </button>
-
-          <button type="button" className="hero__btn hero__btn--secondary">
-            ФУНКЦҮҮДИЙГ ҮЗЭХ
-          </button>
         </div>
 
         <div className="hero__tags">
