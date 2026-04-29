@@ -1,33 +1,11 @@
 import "./CtaSection.css";
-import { useEffect, useRef } from "react"; // ADD THIS LINE
+import useRevealOnScroll from "../hooks/useRevealOnScroll";
 
 export default function CtaSection() {
-  // ADD THIS BLOCK
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("cta-section-visible");
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
+  const sectionRef = useRevealOnScroll("cta-section-visible");
 
   return (
-    <section className="cta-section" ref={sectionRef}> {/* ADD ref={sectionRef} */}
+    <section className="cta-section" ref={sectionRef}>
       <div className="cta-title-wrap">
         <h2 className="cta-title">
           Системийг туршиж

@@ -1,5 +1,5 @@
 import "./BenefitsSection.css";
-import { useEffect, useRef } from "react"; // ADD THIS LINE
+import useRevealOnScroll from "../hooks/useRevealOnScroll";
 import featureImage1 from "../assets/FeatureImage4.png";
 import featureImage2 from "../assets/FeatureImage2.png";
 import featureImage3 from "../assets/FeatureImage3.png";
@@ -29,36 +29,15 @@ const benefitItems = [
 ];
 
 export default function BenefitsSection() {
-  // ADD THIS BLOCK
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("benefits-section-visible");
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
+  const sectionRef = useRevealOnScroll("benefits-section-visible");
 
   return (
-    <section className="benefits-section" id="benefits" ref={sectionRef}> {/* ADD ref={sectionRef} */}
+    <section className="benefits-section" id="benefits" ref={sectionRef}>
       {benefitItems.map((item, index) => (
         <div
           key={index}
           className={`benefit-row ${item.reverse ? "benefit-row--reverse" : ""}`}
+          style={{ "--benefit-row-delay": `${index * 120}ms` }}
         >
           <div className={`benefit-text ${index === 2 ? "benefit-text--small" : ""}`}>
             <h2 className="benefit-title">{item.title}</h2>

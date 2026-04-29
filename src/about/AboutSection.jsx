@@ -1,5 +1,5 @@
 import "./AboutSection.css";
-import { useEffect, useRef } from "react"; // ADD THIS LINE
+import useRevealOnScroll from "../hooks/useRevealOnScroll";
 
 const stats = [
   { value: "12+", label: "Үндсэн модуль" },
@@ -9,32 +9,10 @@ const stats = [
 ];
 
 export default function AboutSection() {
-  // ADD THIS BLOCK
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("about-section-visible");
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
+  const sectionRef = useRevealOnScroll("about-section-visible");
 
   return (
-    <section className="about-section" ref={sectionRef}> {/* ADD ref={sectionRef} */}
+    <section className="about-section" ref={sectionRef}>
       <div className="about-text">
         <h2 className="about-title">Ерөнхий танилцуулга</h2>
 

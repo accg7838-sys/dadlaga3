@@ -8,7 +8,7 @@ const navItems = [
   { label: "Contact", href: "#contact" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onOpenAuth }) {
   return (
     <header className="navbar-wrapper">
       <div className="navbar-shell">
@@ -25,7 +25,7 @@ export default function Navbar() {
             ))}
           </nav>
 
-          <button type="button" className="navbar__button">
+          <button type="button" className="navbar__button" onClick={onOpenAuth}>
             Нэвтрэх
           </button>
         </div>

@@ -9,15 +9,49 @@
   grid-template-columns: minmax(320px, 708px) minmax(320px, 1fr);
   gap: 32px;
   align-items: center;
-  /* ADD THESE LINES */
   opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  transition: opacity var(--motion-duration-soft) var(--motion-ease-out);
+  will-change: opacity;
+}
+
+.about-text,
+.about-card {
+  opacity: 0;
+  transform: translate3d(0, var(--motion-distance-md), 0);
+  transition:
+    transform var(--motion-duration-reveal) var(--motion-ease-out),
+    opacity var(--motion-duration-reveal) ease;
+  will-change: transform, opacity;
+}
+
+.about-text {
+  transition-delay: 90ms;
+}
+
+.about-card:nth-child(1) {
+  transition-delay: 170ms;
+}
+
+.about-card:nth-child(2) {
+  transition-delay: 250ms;
+}
+
+.about-card:nth-child(3) {
+  transition-delay: 330ms;
+}
+
+.about-card:nth-child(4) {
+  transition-delay: 410ms;
 }
 
 .about-section.about-section-visible {
   opacity: 1;
-  transform: translateY(0);
+}
+
+.about-section.about-section-visible .about-text,
+.about-section.about-section-visible .about-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .about-text {

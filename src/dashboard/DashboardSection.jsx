@@ -1,6 +1,7 @@
 import "./DashboardSection.css";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import mainImage from "../assets/MainImage.png";
+import useRevealOnScroll from "../hooks/useRevealOnScroll";
 
 const menuItems = [
   {
@@ -30,30 +31,9 @@ const menuItems = [
 ];
 
 export default function DashboardSection() {
-  const sectionRef = useRef(null);
+  const sectionRef = useRevealOnScroll("dashboard-section-visible");
+  const menuContainerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const menuRefs = useRef([]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("dashboard-section-visible");
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
 
   // Handle scroll events on the menu
   const handleMenuScroll = (e) => {
@@ -68,12 +48,13 @@ export default function DashboardSection() {
   // Handle click on menu item
   const handleMenuItemClick = (index) => {
     setActiveIndex(index);
-    const menuContainer = document.querySelector('.dashboard-menu-items');
+    const menuContainer = menuContainerRef.current;
+
     if (menuContainer) {
       const itemHeight = menuContainer.children[0]?.offsetHeight || 0;
       menuContainer.scrollTo({
         top: index * itemHeight,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
@@ -95,13 +76,13 @@ export default function DashboardSection() {
               className="dashboard-line-active" 
               style={{ 
                 height: `${(activeIndex + 1) * 42}px`,
-                transition: 'height 0.3s ease'
               }} 
             />
           </div>
 
           <div 
             className="dashboard-menu-items"
+            ref={menuContainerRef}
             onScroll={handleMenuScroll}
           >
             {menuItems.map((item, index) => (
@@ -109,7 +90,6 @@ export default function DashboardSection() {
                 key={item.title} 
                 className="dashboard-menu-item"
                 onClick={() => handleMenuItemClick(index)}
-                style={{ cursor: 'pointer' }}
               >
                 <h3 className={`dashboard-menu-title ${activeIndex === index ? "active" : ""}`}>
                   {item.title}

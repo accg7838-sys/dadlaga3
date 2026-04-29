@@ -17,7 +17,7 @@ const tags = [
   "Custom Branding",
 ];
 
-export default function Hero() {
+export default function Hero({ onOpenAuth }) {
   return (
     <section className="hero" id="top">
       <div className="hero__content">
@@ -36,7 +36,7 @@ export default function Hero() {
         </p>
 
         <div className="hero__actions">
-          <button type="button" className="hero__btn hero__btn--primary">
+          <button type="button" className="hero__btn hero__btn--primary" onClick={onOpenAuth}>
             СИСТЕМД НЭВТРЭХ
           </button>
         </div>

@@ -12,15 +12,45 @@
   align-items: center;
   gap: 40px;
   text-align: center;
-  /* ADD THESE LINES */
   opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  transition: opacity var(--motion-duration-soft) var(--motion-ease-out);
+  will-change: opacity;
 }
 
 .cta-section.cta-section-visible {
   opacity: 1;
-  transform: translateY(0);
+}
+
+.cta-description-wrap,
+.cta-actions {
+  opacity: 0;
+  transition:
+    transform var(--motion-duration-reveal) var(--motion-ease-out),
+    opacity var(--motion-duration-reveal) ease;
+  will-change: transform, opacity;
+}
+
+.cta-title-wrap {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  overflow: visible;
+}
+
+.cta-description-wrap {
+  transform: translate3d(0, var(--motion-distance-md), 0);
+  transition-delay: 170ms;
+}
+
+.cta-actions {
+  transform: translate3d(0, var(--motion-distance-md), 0);
+  transition-delay: 250ms;
+}
+
+.cta-section.cta-section-visible .cta-description-wrap,
+.cta-section.cta-section-visible .cta-actions {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .cta-title {

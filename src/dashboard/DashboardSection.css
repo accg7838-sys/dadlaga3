@@ -10,13 +10,44 @@
   gap: 64px;
   box-sizing: border-box;
   opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  transition: opacity var(--motion-duration-soft) var(--motion-ease-out);
+  will-change: opacity;
 }
 
 .dashboard-section.dashboard-section-visible {
   opacity: 1;
-  transform: translateY(0);
+}
+
+.dashboard-header,
+.dashboard-menu,
+.dashboard-preview {
+  opacity: 0;
+  transition:
+    transform var(--motion-duration-reveal) var(--motion-ease-out),
+    opacity var(--motion-duration-reveal) ease;
+  will-change: transform, opacity;
+}
+
+.dashboard-header {
+  transform: translate3d(0, var(--motion-distance-md), 0);
+  transition-delay: 90ms;
+}
+
+.dashboard-menu {
+  transform: translate3d(-30px, var(--motion-distance-md), 0);
+  transition-delay: 170ms;
+}
+
+.dashboard-preview {
+  transform: translate3d(30px, var(--motion-distance-md), 0);
+  transition-delay: 260ms;
+}
+
+.dashboard-section.dashboard-section-visible .dashboard-header,
+.dashboard-section.dashboard-section-visible .dashboard-menu,
+.dashboard-section.dashboard-section-visible .dashboard-preview {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
 }
 
 .dashboard-header {
@@ -72,7 +103,7 @@
 .dashboard-line-active {
   width: 2px;
   background: #fff;
-  transition: height 0.3s ease;
+  transition: height 0.38s var(--motion-ease-out);
 }
 
 .dashboard-menu-items {
@@ -86,26 +117,15 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Custom scrollbar styling */
+/* Hide scrollbar but keep scroll behavior */
 .dashboard-menu-items::-webkit-scrollbar {
-  width: 4px;
-}
-
-.dashboard-menu-items::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-.dashboard-menu-items::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-}
-
-.dashboard-menu-items::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .dashboard-menu-item {
@@ -114,7 +134,9 @@
   gap: 8px;
   padding: 12px 0;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    transform 0.32s var(--motion-ease-out),
+    opacity 0.32s ease;
 }
 
 .dashboard-menu-title {
@@ -141,6 +163,10 @@
 .dashboard-menu-title.active,
 .dashboard-menu-description.active {
   color: #fff;
+}
+
+.dashboard-menu-item:hover {
+  transform: translate3d(6px, 0, 0);
 }
 
 .dashboard-preview {
