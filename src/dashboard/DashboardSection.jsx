@@ -1,6 +1,6 @@
 import "./DashboardSection.css";
-import { useRef, useState } from "react";
-import mainImage from "../assets/MainImage.png";
+import { useCallback, useEffect, useRef, useState } from "react";
+import screenImage from "../assets/ScreenImage.png";
 import useRevealOnScroll from "../hooks/useRevealOnScroll";
 
 const menuItems = [
@@ -34,15 +34,60 @@ export default function DashboardSection() {
   const sectionRef = useRevealOnScroll("dashboard-section-visible");
   const menuContainerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [linePosition, setLinePosition] = useState({ top: 12, height: 52 });
+
+  const updateLinePosition = useCallback(() => {
+    const menuContainer = menuContainerRef.current;
+    const activeItem = menuContainer?.children[activeIndex];
+
+    if (!menuContainer || !activeItem) {
+      return;
+    }
+
+    setLinePosition({
+      top: menuContainer.offsetTop + activeItem.offsetTop - menuContainer.scrollTop,
+      height: activeItem.offsetHeight,
+    });
+  }, [activeIndex]);
+
+  const setLineToItem = (menuContainer, index) => {
+    const item = menuContainer.children[index];
+
+    if (!item) {
+      return;
+    }
+
+    setLinePosition({
+      top: menuContainer.offsetTop + item.offsetTop - menuContainer.scrollTop,
+      height: item.offsetHeight,
+    });
+  };
+
+  useEffect(() => {
+    updateLinePosition();
+    window.addEventListener("resize", updateLinePosition);
+
+    return () => window.removeEventListener("resize", updateLinePosition);
+  }, [updateLinePosition]);
 
   // Handle scroll events on the menu
   const handleMenuScroll = (e) => {
-    const scrollTop = e.target.scrollTop;
-    const itemHeight = e.target.children[0]?.offsetHeight || 0;
-    const newIndex = Math.round(scrollTop / itemHeight);
+    const menuContainer = e.currentTarget;
+    const items = Array.from(menuContainer.children);
+    const visibleTop = menuContainer.scrollTop;
+    const newIndex = items.reduce((closestIndex, item, index) => {
+      const closestItem = items[closestIndex];
+      const distance = Math.abs(item.offsetTop - visibleTop);
+      const closestDistance = Math.abs(closestItem.offsetTop - visibleTop);
+
+      return distance < closestDistance ? index : closestIndex;
+    }, 0);
+
     if (newIndex !== activeIndex && newIndex >= 0 && newIndex < menuItems.length) {
       setActiveIndex(newIndex);
     }
+
+    setLineToItem(menuContainer, newIndex);
   };
 
   // Handle click on menu item
@@ -51,9 +96,10 @@ export default function DashboardSection() {
     const menuContainer = menuContainerRef.current;
 
     if (menuContainer) {
-      const itemHeight = menuContainer.children[0]?.offsetHeight || 0;
+      const activeItem = menuContainer.children[index];
+
       menuContainer.scrollTo({
-        top: index * itemHeight,
+        top: activeItem?.offsetTop || 0,
         behavior: "smooth",
       });
     }
@@ -75,7 +121,8 @@ export default function DashboardSection() {
             <div 
               className="dashboard-line-active" 
               style={{ 
-                height: `${(activeIndex + 1) * 42}px`,
+                height: `${linePosition.height}px`,
+                transform: `translateY(${linePosition.top}px)`,
               }} 
             />
           </div>
@@ -116,7 +163,7 @@ export default function DashboardSection() {
             </div>
           </div>
 
-          <img src={mainImage} alt="Dashboard preview" className="dashboard-preview-image" />
+          <img src={screenImage} alt="Dashboard preview" className="dashboard-preview-image" />
         </div>
       </div>
     </section>
